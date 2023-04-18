@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 app.set("port", process.env.PORT || 5000)
 app.use('/products', routerProducto)
 app.use('/cart', routerCart)
-const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
+const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")} `))
 
 const io = new Server(server)
 

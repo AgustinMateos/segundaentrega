@@ -12,7 +12,14 @@ export class ManagerMongoDB {
 
     async setConnection() {
         try {
-            await mongoose.connect(this.url)
+            await mongoose.connect(this.url, {
+                useNewUrlParser:true, 
+                useUnifiedTopology:true,
+            })
+                console.log("boca")
+            
+            
+
         } catch (error) {
             return error
         }
