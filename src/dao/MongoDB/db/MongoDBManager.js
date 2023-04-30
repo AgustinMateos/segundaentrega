@@ -4,7 +4,7 @@ export class ManagerMongoDB {
 
 
     constructor(url, collection, schema) {
-        this.url = url //Atrib. privado
+        this.url = url
         this.collection = collection
         this.schema = new mongoose.Schema(schema)
         this.model = mongoose.model(this.collection, this.schema)
@@ -12,20 +12,13 @@ export class ManagerMongoDB {
 
     async setConnection() {
         try {
-            await mongoose.connect(this.url, {
-                useNewUrlParser:true, 
-                useUnifiedTopology:true,
-            })
-                console.log("boca")
-            
-            
-
+            await mongoose.connect(this.url)
         } catch (error) {
             return error
         }
     }
 
-    async addElements(elements) { // 1 o varios elementos
+    async addElements(elements) { //Agrego 1 o varios elementos
         this.setConnection()
         try {
             return await this.model.insertMany(elements)
@@ -43,7 +36,7 @@ export class ManagerMongoDB {
         }
     }
 
-    async getElementById(id) { // 1 o varios elementos
+    async getElementById(id) { //Agrego 1 o varios elementos
         this.setConnection()
         try {
             return await this.model.findById(id)

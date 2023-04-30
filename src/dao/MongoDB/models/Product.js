@@ -1,4 +1,4 @@
-import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
+import { ManagerMongoDB } from "../db/mongoDBManager.js";
 import { Schema } from "mongoose";
 import paginate from 'mongoose-paginate-v2'
 
@@ -13,7 +13,8 @@ const productSchema = new Schema({
     },
     code: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     price: {
         type: Number,
