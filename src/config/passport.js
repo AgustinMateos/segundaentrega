@@ -2,6 +2,7 @@ import local from 'passport-local'
 import passport from 'passport'
 import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
+import GitHubStrategy from "passport-github2"
 
 //Passport se va a trabajar como u nmiddleware al igual que ath
 
@@ -35,7 +36,7 @@ const initializePassport = () => {
 
     //Inicializar la session del user
     passport.serializeUser((user, done) => {
-        done(null, user._id)
+        done(null, user[0]._id)
     })
 
     //Eliminar la session del user
@@ -62,7 +63,31 @@ const initializePassport = () => {
             return done(error)
         }
     }))
-
+//inicializacion mediante github
+      passport.use('github', new GitHubStrategy ({
+        clientID:process.env.CLIENT_ID,
+        clientSecret:process.env.CLIENT_SECRET,
+        callBack:process.env.CALLBACK_URL
+      }, async(accessToken,refreshToken,profile,done)=>{
+        try {
+            console.log(profile)
+            const user=await managerUser.getElementByEmail(profile._json.email)
+            if (user){
+                done(null,user)
+            }else{
+                const userCreated = await managerUser.addElements([{
+                    first_name: profile._json.name,
+                    last_name: '',//no define apellido ni edad
+                    email: profile._json.email,
+                    age: 28,
+                    password: '', //github ya ofrece una
+                }])
+                done(null,userCreated)
+            }
+        } catch (error) {  
+             return done(error)
+        }
+      }))
 }
 
 export default initializePassport
