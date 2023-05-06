@@ -1,15 +1,14 @@
 import local from 'passport-local'
 import passport from 'passport'
+import GitHubStrategy from 'passport-github2'
 import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
-import GitHubStrategy from "passport-github2"
 
-//Passport se va a trabajar como u nmiddleware al igual que ath
-
+//Passport se va a trabajar como u nmiddleware
 const LocalStrategy = local.Strategy //Defino mi estrategia
 
 const initializePassport = () => {
-    //Definir donde se aplican estrategias
+    //Definir donde se aplican mis estrategias
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
@@ -34,26 +33,16 @@ const initializePassport = () => {
             }
         }))
 
-    //Inicializar la session del user
-    passport.serializeUser((user, done) => {
-        done(null, user[0]._id)
-    })
-
-    //Eliminar la session del user
-    passport.deserializeUser(async (id, done) => {
-        const user = managerUser.getElementById(id)
-        done(null, user)
-    })
 
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
 
         try {
             const user = await managerUser.getElementByEmail(username)
 
-            if (!user) { //User no encontrado
+            if (!user) { //Usuario no encontrado
                 return done(null, false)
             }
-            if (validatePassword(password, user.password)) { //User y contraseña validos
+            if (validatePassword(password, user.password)) { //Usuario y contraseña validos
                 return done(null, user)
             }
 
@@ -63,31 +52,49 @@ const initializePassport = () => {
             return done(error)
         }
     }))
-//inicializacion mediante github
-      passport.use('github', new GitHubStrategy ({
-        clientID:process.env.CLIENT_ID,
-        clientSecret:process.env.CLIENT_SECRET,
-        callBack:process.env.CALLBACK_URL
-      }, async(accessToken,refreshToken,profile,done)=>{
+
+    passport.use('github', new GitHubStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL
+
+    }, async (accessToken, refreshToken, profile, done) => {
+
         try {
-            console.log(profile)
-            const user=await managerUser.getElementByEmail(profile._json.email)
-            if (user){
-                done(null,user)
-            }else{
+            console.log(accessToken)
+            const user = await managerUser.getElementByEmail(profile._json.email)
+            if (user) { //Si existe user en la bdd
+                done(null, user)
+            } else {
                 const userCreated = await managerUser.addElements([{
                     first_name: profile._json.name,
-                    last_name: '',//no define apellido ni edad
+                    last_name: ' ', //github no posee  apellido
                     email: profile._json.email,
-                    age: 28,
-                    password: '', //github ya ofrece una
+                    age: 20, //Github no define la edad
+                    password: ' ' // ya me ofrece una
                 }])
-                done(null,userCreated)
+                done(null, userCreated)
             }
-        } catch (error) {  
-             return done(error)
+
+        } catch (error) {
+            return done(error)
         }
-      }))
+
+    }))
+
+
+    //Inicializar la session del user
+    passport.serializeUser((user, done) => {
+        console.log(user)
+        done(null, user._id)
+    })
+
+    //Eliminar la session del user
+    passport.deserializeUser(async (id, done) => {
+        const user = managerUser.getElementById(id)
+        done(null, user)
+    })
+
 }
 
 export default initializePassport

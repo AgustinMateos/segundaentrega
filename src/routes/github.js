@@ -1,15 +1,13 @@
 import { Router } from "express";
 import passport from "passport";
 
-const routerGitHub=Router()
+const routerGithub = Router()
 
-routerGitHub.get('/github',passport.authenticate('github',{scope:
-    ['user:email']}),async(req,res)=>{}
-)
+routerGithub.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { })
 
-routerGitHub.get('/githubSession',passport.authenticate('github'),async(req,res)=>{
-    req.session.user=req.user
-    res.redirect('/product')
+routerGithub.get('/githubSession', passport.authenticate('github'), async (req, res) => {
+    req.session.user = req.user
+    res.redirect("/product")
 })
 
-export default routerGitHub
+export default routerGithub
