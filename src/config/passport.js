@@ -1,14 +1,36 @@
 import local from 'passport-local'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
+import jwt from 'passport-jwt'
 import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
+import { generateToken } from "../utils/jwt.js";
 
-//Passport se va a trabajar como u nmiddleware
+//Passport se va a trabajar como un nmiddleware
 const LocalStrategy = local.Strategy //Defino mi estrategia
+const JWTStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt //Extractor ya se de headers o cookies, etc
 
 const initializePassport = () => {
-    //Definir donde se aplican mis estrategias
+
+    const cookieExtractor = req => {
+       
+        const token = (req && req.cookies) ? req.cookies('jwtCookies') : null
+        return token
+    }
+
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), //El token se extrae desde las cookies
+        secretOrKey: process.env.PRIVATE_KEY_JWT //Desencriptar
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done(error)
+        }
+
+    }))
+
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
@@ -26,7 +48,8 @@ const initializePassport = () => {
                     age: age,
                     password: passwordHash
                 }])
-                console.log(userCreated)
+                const accessToken = generateToken(userCreated)
+                console.log(accessToken)
                 return done(null, userCreated)
             } catch (error) {
                 return done(error)
@@ -43,6 +66,8 @@ const initializePassport = () => {
                 return done(null, false)
             }
             if (validatePassword(password, user.password)) { //Usuario y contraseña validos
+                const accessToken = generateToken(user)
+                console.log(accessToken)
                 return done(null, user)
             }
 
@@ -52,7 +77,7 @@ const initializePassport = () => {
             return done(error)
         }
     }))
-
+    
     passport.use('github', new GitHubStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -68,10 +93,10 @@ const initializePassport = () => {
             } else {
                 const userCreated = await managerUser.addElements([{
                     first_name: profile._json.name,
-                    last_name: ' ', //github no posee  apellido
+                    last_name: ' ', // github no posee apellido
                     email: profile._json.email,
                     age: 20, //Github no define la edad
-                    password: ' ' // ya me ofrece una
+                    password: ' ' // github ya me ofrece una
                 }])
                 done(null, userCreated)
             }
@@ -85,10 +110,13 @@ const initializePassport = () => {
 
     //Inicializar la session del user
     passport.serializeUser((user, done) => {
-        console.log(user)
+        if (Array.isArray(user)) {
+            done(null, user[0]._id)
+        }
         done(null, user._id)
-        
     })
+
+
 
     //Eliminar la session del user
     passport.deserializeUser(async (id, done) => {
