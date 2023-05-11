@@ -26,7 +26,12 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    }, 
+    id_cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'carts',
+        required: true
+    },
 })
 
 export class ManagerUserMongoDB extends ManagerMongoDB {

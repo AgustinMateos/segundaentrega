@@ -14,8 +14,9 @@ const ExtractJWT = jwt.ExtractJwt //Extractor ya se de headers o cookies, etc
 const initializePassport = () => {
 
     const cookieExtractor = req => {
-       
-        const token = (req && req.cookies) ? req.cookies('jwtCookies') : null
+        
+        const token = req.cookies ? req.cookies.jwtCookie : {}
+        console.log(token)
         return token
     }
 
