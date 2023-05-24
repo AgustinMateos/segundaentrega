@@ -6,7 +6,7 @@ import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 import { generateToken } from "../utils/jwt.js";
 
-//Passport se va a trabajar como un nmiddleware
+//Passport se va a trabajar como un middleware
 const LocalStrategy = local.Strategy //Defino mi estrategia
 const JWTStrategy = jwt.Strategy
 const ExtractJWT = jwt.ExtractJwt //Extractor ya se de headers o cookies, etc

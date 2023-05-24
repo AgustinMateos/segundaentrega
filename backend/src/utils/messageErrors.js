@@ -1,5 +1,4 @@
 import passport from "passport";
-
 //Funcion general para retornar errores en las estrategias de Passport
 export const passportError = (strategy) => {
     return async (req, res, next) => {
@@ -10,11 +9,9 @@ export const passportError = (strategy) => {
             if (!user) { //Si no existe mi usuario
                 return done(null,false,{message:"usuario no encontrado"}) //Si existe una propiedad messages en info, la envio sino envio pasado a String el objeto info
             }
-
             req.user = user
             next()
         })(req, res, next)
-
     }
 }
 

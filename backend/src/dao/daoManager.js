@@ -1,6 +1,6 @@
 export const getManagerCart = async () => {
     const modelCart = process.env.SELECTEDBDD == 1 ? await import('./MongoDB/models/Cart.js') :
-        await import('./Postgresql/models/Cart.js')
+        await import('./Postgresql/models/Cart.js.js')
     return modelCart  
 }
 

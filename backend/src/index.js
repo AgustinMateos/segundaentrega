@@ -5,16 +5,29 @@ import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import multer from 'multer'
-import { engine } from 'express-handlebars'
+import {engine } from 'express-handlebars'
 import { __dirname } from './path.js'
 import * as path from 'path'
 import router from './routes/routes.js'
 import initializePassport from './config/passport.js'
+import cors from 'cors'
 
+const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
+
+const corsOptions = { //Reviso si el cliente que intenta ingresar a mi servidor esta o no en esta lista
+    origin: (origin, callback) => {
+        if (whiteList.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by Cors'))
+        }
+    }
+}
 const app = express()
 
 app.use(cookieParser(process.env.PRIVATE_KEY_JWT))
 app.use(express.json())
+app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
     store: MongoStore.create({

@@ -6,7 +6,7 @@ export const getSession = (req, res) => {
     }
     //No esta activa la sesion
     res.redirect('/api/session/login', 500, {
-        //Mensaje de logueo
+        //Mensaje de logeo
     })
 }
 
