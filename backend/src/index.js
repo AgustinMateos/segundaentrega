@@ -10,19 +10,8 @@ import { __dirname } from './path.js'
 import * as path from 'path'
 import router from './routes/routes.js'
 import initializePassport from './config/passport.js'
-import cors from 'cors'
 
-const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 
-const corsOptions = { //Reviso si el cliente que intenta ingresar a mi servidor esta o no en esta lista
-    origin: (origin, callback) => {
-        if (whiteList.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by Cors'))
-        }
-    }
-}
 const app = express()
 
 app.use(cookieParser(process.env.PRIVATE_KEY_JWT))
