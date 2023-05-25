@@ -16,7 +16,6 @@ const app = express()
 
 app.use(cookieParser(process.env.PRIVATE_KEY_JWT))
 app.use(express.json())
-app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
     store: MongoStore.create({
