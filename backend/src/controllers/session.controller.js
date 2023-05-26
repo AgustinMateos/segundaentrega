@@ -1,12 +1,12 @@
 export const getSession = (req, res) => {
     if (req.session.login) { //Si la sesion esta activa en la BDD
         res.redirect('/product', 200, {
-            'message': "Welcome to my shop"
+            'message': "Bienvenido/a a mi tienda"
         })
     }
     //No esta activa la sesion
     res.redirect('/api/session/login', 500, {
-        //Mensaje de logeo
+        //Mensaje de logueo
     })
 }
 
@@ -38,6 +38,6 @@ export const destroySession = (req, res) => {
         req.session.destroy()
     }
     res.redirect('/product', 200, {
-        'divMessage': "Hello"
+        'divMessage': "Hola"
     })
 }

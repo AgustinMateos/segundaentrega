@@ -17,7 +17,7 @@ const cartSchema = new Schema({
 
 export class ManagerCartMongoDB extends ManagerMongoDB {
     constructor() {
-        super(process.env.MONGODBURL, "carts", cartSchema)
+        super(process.env.MONGODBURL, "cart", cartSchema)
     }
 
     async addProductCart(id, idProd, cant) {

@@ -13,7 +13,7 @@ const messageSchema = new Schema({
 export class ManagerMessageMongoDB extends ManagerMongoDB {
     constructor() {
         super(process.env.MONGODBURL, "messages", messageSchema)
-        //atributos 
+        //atributos propios de la clase
     }
-    // metodos 
+    // metodos propios de la clase
 }

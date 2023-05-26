@@ -5,12 +5,11 @@ import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import multer from 'multer'
-import {engine } from 'express-handlebars'
+import { engine } from 'express-handlebars'
 import { __dirname } from './path.js'
 import * as path from 'path'
 import router from './routes/routes.js'
 import initializePassport from './config/passport.js'
-
 
 const app = express()
 

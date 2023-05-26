@@ -6,7 +6,7 @@ import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 import { generateToken } from "../utils/jwt.js";
 
-//Passport se va a trabajar como un middleware
+//Passport se va a trabajar como u nmiddleware
 const LocalStrategy = local.Strategy //Defino mi estrategia
 const JWTStrategy = jwt.Strategy
 const ExtractJWT = jwt.ExtractJwt //Extractor ya se de headers o cookies, etc
@@ -14,7 +14,9 @@ const ExtractJWT = jwt.ExtractJwt //Extractor ya se de headers o cookies, etc
 const initializePassport = () => {
 
     const cookieExtractor = req => {
-        
+        console.log(req.cookies)
+        //{} no hay cookies != esta cookie no existe
+        //Si existen las cookies, asigno mi cookie en especifico sino asigno null
         const token = req.cookies ? req.cookies.jwtCookie : {}
         console.log(token)
         return token
@@ -78,7 +80,7 @@ const initializePassport = () => {
             return done(error)
         }
     }))
-    
+    /*
     passport.use('github', new GitHubStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -94,10 +96,10 @@ const initializePassport = () => {
             } else {
                 const userCreated = await managerUser.addElements([{
                     first_name: profile._json.name,
-                    last_name: ' ', // github no posee apellido
+                    last_name: ' ', //Por que github no posee nombre y apellido
                     email: profile._json.email,
                     age: 20, //Github no define la edad
-                    password: ' ' // github ya me ofrece una
+                    password: ' ' //No puedo asignar una contraseña por que github ya me ofrece una
                 }])
                 done(null, userCreated)
             }
@@ -106,15 +108,17 @@ const initializePassport = () => {
             return done(error)
         }
 
-    }))
+    }))*/
 
 
     //Inicializar la session del user
     passport.serializeUser((user, done) => {
         if (Array.isArray(user)) {
             done(null, user[0]._id)
+        } else {
+            done(null, user._id)
         }
-        done(null, user._id)
+
     })
 
 
