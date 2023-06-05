@@ -80,7 +80,7 @@ const initializePassport = () => {
             return done(error)
         }
     }))
-    /*
+    
     passport.use('github', new GitHubStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -108,7 +108,7 @@ const initializePassport = () => {
             return done(error)
         }
 
-    }))*/
+    }))
 
 
     //Inicializar la session del user

@@ -1,7 +1,7 @@
 export const getSession = (req, res) => {
     if (req.session.login) { //Si la sesion esta activa en la BDD
         res.redirect('/product', 200, {
-            'message': "Bienvenido/a a mi tienda"
+            'message': "Welcome to my store"
         })
     }
     //No esta activa la sesion
