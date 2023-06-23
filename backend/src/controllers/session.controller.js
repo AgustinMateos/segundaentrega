@@ -4,7 +4,7 @@ export const getSession = (req, res) => {
             'message': "Welcome to my store"
         })
     }
-    //No esta activa la sesion
+    //inactiva la sesion
     res.redirect('/api/session/login', 500, {
         //Mensaje de logueo
     })

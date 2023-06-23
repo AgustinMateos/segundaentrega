@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken'
 
 export const generateToken = (user) => {
     /*
-        1er: Objeto de asociacion del token
+        1er: Objeto de asociacion del token// objeto con la info
         2do: Clave privada de el cifrado
-        3er: Tiempo de expiracion
+        3er: Tiempo de expiracion del token
     */
     const token = jwt.sign({ user }, process.env.PRIVATE_KEY_JWT, { expiresIn: '12h' })
     return token

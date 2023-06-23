@@ -40,7 +40,7 @@ const initializePassport = () => {
             try {
                 const user = await managerUser.getElementByEmail(username)
                 if (user) {
-                    return done(null, false)
+                    return done(null, false)//callback de strategy 
                 }
                 const passwordHash = createHash(password)
 
