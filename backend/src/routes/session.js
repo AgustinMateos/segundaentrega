@@ -1,11 +1,12 @@
 import { Router } from "express";
 import passport from "passport";
+import { createCarrito } from "../controllers/cart.controller.js";
 import { destroySession, getSession, testLogin } from "../controllers/session.controller.js";
 import { passportError, authorization } from "../utils/messageErrors.js";
 
 const routerSession = Router()
 
-routerSession.post("/login", passport.authenticate('login'), testLogin)
+routerSession.post("/login", passport.authenticate('login'), testLogin,createCarrito)
 routerSession.get("/logout", destroySession)
 //Consultar las cookies de mi navegador
 routerSession.get('/testJWT', passport.authenticate('jwt', { session: false }, (req, res) => {

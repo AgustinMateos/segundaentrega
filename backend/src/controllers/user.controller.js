@@ -1,9 +1,5 @@
-// import { getManagerUsers } from "../dao/Factory.js";
 import { userService } from "../repository/index.js";
 
-
-// const data = await getManagerUsers()
-// export const managerUser = new data.ManagerUserMongoDB
 
 export const createUser = (req, res) => {
     res.send({ status: "success", message: "User created " })
