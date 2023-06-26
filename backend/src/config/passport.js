@@ -2,9 +2,13 @@ import local from 'passport-local'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import jwt from 'passport-jwt'
-import { managerUser } from '../controllers/user.controller.js'
+// import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 import { generateToken } from "../utils/jwt.js";
+import { userService } from '../repository/index.js'
+
+
+
 
 //Passport se va a trabajar como u nmiddleware
 const LocalStrategy = local.Strategy //Defino mi estrategia
@@ -38,13 +42,13 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
             try {
-                const user = await managerUser.getElementByEmail(username)
+                const user = await userService.getUserByEmailServ(username)
                 if (user) {
                     return done(null, false)//callback de strategy 
                 }
                 const passwordHash = createHash(password)
 
-                const userCreated = await managerUser.addElements([{
+                const userCreated = await userService.getAllUsersServ([{
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
@@ -63,7 +67,7 @@ const initializePassport = () => {
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
 
         try {
-            const user = await managerUser.getElementByEmail(username)
+            const user = await userService.getUserByEmailServ(username)
 
             if (!user) { //Usuario no encontrado
                 return done(null, false)
@@ -90,11 +94,11 @@ const initializePassport = () => {
 
         try {
             console.log(accessToken)
-            const user = await managerUser.getElementByEmail(profile._json.email)
+            const user = await userService.getUserByEmailServ(profile._json.email)
             if (user) { //Si existe user en la bdd
                 done(null, user)
             } else {
-                const userCreated = await managerUser.addElements([{
+                const userCreated = await userService.postElementsUser([{
                     first_name: profile._json.name,
                     last_name: ' ', //Por que github no posee nombre y apellido
                     email: profile._json.email,
@@ -125,7 +129,7 @@ const initializePassport = () => {
 
     //Eliminar la session del user
     passport.deserializeUser(async (id, done) => {
-        const user = managerUser.getElementById(id)
+        const user = userService.getUserByIdServ(id)
         done(null, user)
     })
 

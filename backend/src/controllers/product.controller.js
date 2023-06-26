@@ -1,7 +1,6 @@
-import { getManagerProducts } from "../dao/daoManager.js";
-
-const data = await getManagerProducts()
-const managerProduct = new data.ManagerProductMongoDB
+import { productService } from "../repository/index.js";
+// const data = await getManagerProducts()
+// const managerProduct = new data.ManagerProductMongoDB
 
 export const getProducts = async (req, res) => {
     const { limit, page, filter, sort } = req.query;
@@ -10,7 +9,7 @@ export const getProducts = async (req, res) => {
     const limi = limit != undefined ? limit : 10
     const ord = sort == "asc" ? 1 : -1
     try {
-        const productos = await managerProduct.getProducts(limi, pag, filter, ord)
+        const productos = await productService.getProductsServ(limi, pag, filter, ord)
 
         if (productos) {
             return res.status(200).json(productos)
@@ -31,9 +30,10 @@ export const getProduct = async (req, res) => {
     const { id } = req.params
 
     try {
-        const product = await managerProduct.getElementById(id);
+        const product = await productService.getProductByIdServ(id);
         if (product) {
             return res.status(200).json(product)
+           
         }
 
         res.status(200).json({
@@ -50,7 +50,7 @@ export const createProduct = async (req, res) => {
     const { title, description, code, price, status, stock, category } = req.body
 
     try {
-        const product = await managerProduct.addElements([{ title, description, code, price, status, stock, category }])
+        const product = await productService.postProductServ([{ title, description, code, price, status, stock, category }])
         res.status(204).json(product)
     } catch (error) {
         res.status(500).json({
@@ -63,7 +63,7 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params
     const { title, description, code, price, status, stock, category, thumbnails } = req.body
     try {
-        const product = await managerProduct.updateElement(id, { title: title, description: description, code: code, price: price, status: status, stock: stock, category: category, thumbnails: thumbnails })
+        const product = await productService.updateElementService(id, { title: title, description: description, code: code, price: price, status: status, stock: stock, category: category, thumbnails: thumbnails })
 
         if (product) {
             return res.status(200).json({
@@ -86,7 +86,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     const { id } = req.params
     try {
-        const product = await managerProduct.deleteElement(id)
+        const product = await productService.deleteElementProService(id)
 
         if (product) {
             return res.status(200).json({
